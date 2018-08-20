@@ -1,0 +1,1 @@
+SELECT comment, username FROM public.comments as c, public.users as u where c.user_id = u.id;
