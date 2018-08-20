@@ -2,7 +2,7 @@
 
 ### Install
 
-You need [https://store.docker.com/search?offering=community&type=edition](Docker Community Edition) installed.
+You need [Docker Community Edition](https://store.docker.com/search?offering=community&type=edition) installed.
 
 When that is done installing, run these commands in your terminal:
 ```
