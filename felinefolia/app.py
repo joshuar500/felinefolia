@@ -58,7 +58,8 @@ def create_app(settings_override=None):
     """
     app = Flask(__name__, instance_relative_config=True)
 
-    CORS(app)
+    # TODO: check if production or development server
+    CORS(app, resources={r"/*": {"origins": "*"}})
 
     app.config.from_object('config.settings')
     app.config.from_pyfile('settings.py', silent=True)

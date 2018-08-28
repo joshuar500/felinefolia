@@ -107,8 +107,8 @@ class PreRegister(Resource):
     return { 'message': 'User already exists dude' }, 500
 
 login_parser = reqparse.RequestParser()
-login_parser.add_argument('username')
-login_parser.add_argument('password')
+login_parser.add_argument('username', required=True)
+login_parser.add_argument('password', required=True)
 
 class Login(Resource):
 
@@ -117,8 +117,15 @@ class Login(Resource):
     args = login_parser.parse_args()
     user = User.find_by_identity(args.username)
     if user and user.authenticated(password=args.password):
-      access_token = create_access_token(identity=user.username)
-      refresh_token = create_refresh_token(identity=user.username)
+
+      current_user = {
+        'username': user.username,
+        'role': user.role,
+        'email': user.email
+      }
+
+      access_token = create_access_token(identity=current_user)
+      refresh_token = create_refresh_token(identity=current_user)
 
       # obj = {
       #   'message': 'yay you logged in',
@@ -139,7 +146,8 @@ class Account(Resource):
   @jwt_required
   def get(self):
     current_user = get_jwt_identity()
-    return {'derp': 'once again, here. {current_user}'}, 200
+    print(current_user)
+    return current_user, 200
 
 api.add_resource(Register, '/register')
 api.add_resource(PreRegister, '/preregister')
