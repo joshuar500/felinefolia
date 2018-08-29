@@ -89,7 +89,6 @@ class PreRegister(Resource):
 
     found_user = User.find_by_identity(args.email)
     if not found_user:
-      print('there is no user, lets create one')
       user = User(username=email, email=email, has_business=has_business)
 
       # generate a password for user
@@ -103,8 +102,8 @@ class PreRegister(Resource):
       comment.user_id = user.id
       comment.comment = optional
       comment.save()
-      return { 'message': 'Yay! Everything worked!!!' }, 200
-    return { 'message': 'User already exists dude' }, 500
+      return { 'message': 'Account created.' }, 200
+    return { 'message': 'User already exists.' }, 500
 
 login_parser = reqparse.RequestParser()
 login_parser.add_argument('username', required=True)

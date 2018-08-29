@@ -4,8 +4,9 @@ from hashlib import md5
 
 import pytz
 from flask import current_app
-from sqlalchemy import or_
+from sqlalchemy import or_, inspect
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_restful import fields
 
 from itsdangerous import URLSafeTimedSerializer, \
     TimedJSONWebSignatureSerializer
@@ -70,6 +71,17 @@ class User(ResourceMixin, db.Model):
         super(User, self).__init__(**kwargs)
 
         self.password = User.encrypt_password(kwargs.get('password', ''))
+
+    @staticmethod
+    def __json__(group=None):
+      _json = {
+        'username': fields.String,
+        'email': fields.String,
+        'role': fields.String,
+        'has_business': fields.String,
+        'name': fields.String
+      }
+      return  _json
 
     @classmethod
     def find_by_identity(cls, identity):

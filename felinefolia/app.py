@@ -10,6 +10,7 @@ from celery import Celery
 
 from felinefolia.blueprints.contact import contact
 from felinefolia.blueprints.user import user
+from felinefolia.blueprints.admin import admin
 
 from felinefolia.extensions import (
     mail,
@@ -69,6 +70,8 @@ def create_app(settings_override=None):
 
     jwt = JWTManager(app)
 
+    jwt.user_claims_loader(add_claims_to_access_token)
+
     stripe.api_key = app.config.get('STRIPE_SECRET_KEY')
     stripe.api_version = app.config.get('STRIPE_API_VERSION')
 
@@ -88,6 +91,7 @@ def create_app(settings_override=None):
     # locale(app)
     app.register_blueprint(contact)
     app.register_blueprint(user)
+    app.register_blueprint(admin)
 
     return app
 
@@ -103,3 +107,10 @@ def extensions(app):
     db.init_app(app)
 
     return None
+
+
+def add_claims_to_access_token(identity):
+    if identity['role'] == 'admin':
+        return {'roles': 'admin'}
+    else:
+        return {'roles': 'user'}
