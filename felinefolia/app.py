@@ -1,4 +1,5 @@
 import stripe
+import os
 
 from flask import Flask
 from flask_restful import Api
@@ -65,8 +66,9 @@ def create_app(settings_override=None):
     app.config.from_object('config.settings')
     app.config.from_pyfile('settings.py', silent=True)
 
-    if settings_override:
-        app.config.update(settings_override)
+    if os.environ.get('PRODUCTION'):
+        print('loading production configuration')
+        app.config.from_pyfile('prod_settings.py')
 
     jwt = JWTManager(app)
 

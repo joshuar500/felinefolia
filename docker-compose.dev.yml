@@ -4,7 +4,7 @@ services:
   postgres:
     image: 'postgres:9.5'
     env_file:
-      - '.env'
+      - '.env.development'
     volumes:
       - 'postgres:/var/lib/postgresql/data'
     ports:
@@ -23,7 +23,7 @@ services:
     command: >
       gunicorn -c "python:config.gunicorn" --reload "felinefolia.app:create_app()"
     env_file:
-      - '.env'
+      - '.env.development'
     volumes:
       - '.:/felinefolia'
     ports:
@@ -33,7 +33,7 @@ services:
     build: .
     command: celery worker -B -l info -A felinefolia.blueprints.contact.tasks 
     env_file:
-      - '.env'
+      - '.env.development'
     volumes:
       - '.:/felinefolia'
 
