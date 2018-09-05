@@ -1,16 +1,44 @@
 upstream felinefolia {
-        server 0.0.0.0:8000;
+        server 127.0.0.1:8000 fail_timeout=0;
         keepalive 64;
 }
 
 server {
-    if ($host = api.felinefolia.com) {
-        return 301 https://$host$request_uri;
-    } # managed by Certbot
+    #if ($host = api.felinefolia.com) {
+    #    return 301 https://$host$request_uri;
+    #} # managed by Certbot
 
         server_name api.felinefolia.com;
+        add_header 'Access-Control-Allow-Headers' 'Authorization,Accept,Origin,DNT,User-Agent,X-Requested-With,Cache-Control,Content-Type';
+        add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATH';
 
 
+    location / {
+
+
+        if ($request_method = OPTIONS) {
+                add_header 'Access-Control-Allow-Origin' $http_origin always;
+                add_header 'Access-Control-Allow-Credentials' 'true';
+                add_header 'Access-Control-Allow-Headers' 'Authorization,Accept,Origin,DNT,User-Agent,X-Requested-With,Cache-Control,Content-Type';
+                add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATH';
+                add_header 'Access-Control-Max-Age' 1728000;
+                add_header Content-Length 0;
+                add_header Content-Type text/plain;
+                return 204;
+        }
+
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-NginX-Proxy true;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_max_temp_file_size 0;
+        proxy_pass http://felinefolia/;
+        proxy_redirect off;
+        proxy_intercept_errors on;
+    }
 
     listen 443 ssl; # managed by Certbot
     ssl_certificate /etc/letsencrypt/live/api.felinefolia.com/fullchain.pem; # managed by Certbot
@@ -22,13 +50,16 @@ server {
 
 
 server {
-    if ($host = api.felinefolia.com) {
-        return 301 https://$host$request_uri;
-    } # managed by Certbot
+    #if ($host = api.felinefolia.com) {
+     #   return 301 https://$host$request_uri;
+    #} # managed by Certbot
+
+
+
 
         listen 80;
 
-    server_name api.felinefolia.com;
+        server_name api.felinefolia.com;
     return 404; # managed by Certbot
 
 
