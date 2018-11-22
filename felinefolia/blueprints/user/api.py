@@ -36,11 +36,6 @@ def email(email_str):
 
 register_parser = reqparse.RequestParser()
 register_parser.add_argument(
-    'username', dest='username',
-    required=True,
-    help='The user\'s username',
-)
-register_parser.add_argument(
     'email', dest='email',
     type=email,
     required=True, help='The user\'s email',
@@ -57,12 +52,8 @@ register_parser.add_argument(
 
 user_fields = {
     'id': fields.Integer,
-    'username': fields.String,
     'email': fields.String,
-    'user_priority': fields.Integer,
-    'custom_greeting': fields.FormattedString('Hey there!'),
-    'date_created': fields.DateTime,
-    'date_updated': fields.DateTime
+    'password': fields.String
 }
 
 class Register(Resource):
@@ -70,10 +61,14 @@ class Register(Resource):
   @marshal_with(user_fields)
   def post(self):
     args = register_parser.parse_args()
-    user = User(username=args.username)
-    user.password = user.encrypt_password(args.password)
-    user.save()
-    return user, 200
+
+    found_user = User.find_by_identity(args.email)
+    if not found_user:
+      user = User(username=args.email, email=args.email)
+      user.password = user.encrypt_password(args.password)
+      user.save()
+      return { 'message': 'Account created.' }, 200
+    return { 'message': 'User already exists.' }, 500
 
 pre_register_parser = reqparse.RequestParser()
 pre_register_parser.add_argument('email', required=True, type=email)

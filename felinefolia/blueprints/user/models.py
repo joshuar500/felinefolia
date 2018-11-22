@@ -12,9 +12,10 @@ from itsdangerous import URLSafeTimedSerializer, \
     TimedJSONWebSignatureSerializer
 
 from lib.util_sqlalchemy import ResourceMixin, AwareDateTime
-# from felinefolia.blueprints.billing.models.credit_card import CreditCard
-# from felinefolia.blueprints.billing.models.subscription import Subscription
-# from felinefolia.blueprints.billing.models.invoice import Invoice
+
+from felinefolia.blueprints.billing.models.credit_card import CreditCard
+from felinefolia.blueprints.billing.models.subscription import Subscription
+from felinefolia.blueprints.billing.models.invoice import Invoice
 from felinefolia.blueprints.contact.models import Comment
 from felinefolia.extensions import db
 
@@ -29,11 +30,11 @@ class User(ResourceMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     # Relationships.
-    # credit_card = db.relationship(CreditCard, uselist=False, backref='users',
-    #                               passive_deletes=True)
-    # subscription = db.relationship(Subscription, uselist=False,
-    #                                backref='users', passive_deletes=True)
-    # invoices = db.relationship(Invoice, backref='users', passive_deletes=True)
+    credit_card = db.relationship(CreditCard, uselist=False, backref='users',
+                                  passive_deletes=True)
+    subscription = db.relationship(Subscription, uselist=False,
+                                   backref='users', passive_deletes=True)
+    invoices = db.relationship(Invoice, backref='users', passive_deletes=True)
     comments = db.relationship(Comment, uselist=False, backref='users', passive_deletes=True)
 
     # Authentication.

@@ -12,6 +12,7 @@ from celery import Celery
 from felinefolia.blueprints.contact import contact
 from felinefolia.blueprints.user import user
 from felinefolia.blueprints.admin import admin
+from felinefolia.blueprints.billing import billing
 
 from felinefolia.extensions import (
     mail,
@@ -94,6 +95,7 @@ def create_app(settings_override=None):
     app.register_blueprint(contact)
     app.register_blueprint(user)
     app.register_blueprint(admin)
+    app.register_blueprint(billing)
 
     return app
 

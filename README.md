@@ -11,7 +11,7 @@ docker-compose up --build
 
 Then open a new terminal when that is finished building and type this to build the database:
 ```
-docker-compose exec website felinefolia db reset
+docker-compose -f docker-compose.dev.yml exec website felinefolia db reset
 ```
 
 ### Development
