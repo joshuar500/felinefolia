@@ -2,17 +2,15 @@
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
-__pycache__/
-*/__pycache__/
 *.py[cod]
 *$py.class
 *.pyc
-felinefolia/blueprints/*/__pycache__/
 *.cpython-37.pyc
 */*/*/*/__pycache__/
 */*/*/__pycache__/
 */*/__pycache__/
 */__pycache__/
+__pycache__/
 
 # C extensions
 *.so
