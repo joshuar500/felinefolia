@@ -8,10 +8,10 @@ GOTO Loop
 
 :Development
 echo Starting development server
-docker-compose -f docker-compose.dev.yml --build up
+docker-compose -f docker-compose.dev.yml up --build
 GOTO:EOF
 
 :Production
 echo Starting production server
-docker-compose -f docker-compose.prod.yml --build up
+docker-compose -f docker-compose.prod.yml up --build
 GOTO:EOF
