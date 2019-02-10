@@ -1,5 +1,6 @@
 import stripe
 import os
+import redis
 
 from flask import Flask
 from flask_restful import Api
@@ -16,7 +17,8 @@ from felinefolia.blueprints.billing import billing
 
 from felinefolia.extensions import (
     mail,
-    db
+    db,
+    jwt
 )
 
 CELERY_TASK_LIST = [
@@ -71,27 +73,11 @@ def create_app(settings_override=None):
         print('loading production configuration')
         app.config.from_pyfile('prod_settings.py')
 
-    jwt = JWTManager(app)
-
-    jwt.user_claims_loader(add_claims_to_access_token)
-
     stripe.api_key = app.config.get('STRIPE_SECRET_KEY')
     stripe.api_version = app.config.get('STRIPE_API_VERSION')
 
-    # middleware(app)
-    # error_templates(app)
-    # exception_handler(app)
-    # app.register_blueprint(admin)
-    # app.register_blueprint(page)
-    # app.register_blueprint(contact)
-    # app.register_blueprint(user)
-    # app.register_blueprint(billing)
-    # app.register_blueprint(stripe_webhook)
-    # app.register_blueprint(bet)
-    # template_processors(app)
     extensions(app)
-    # authentication(app, User)
-    # locale(app)
+
     app.register_blueprint(contact)
     app.register_blueprint(user)
     app.register_blueprint(admin)
@@ -109,12 +95,26 @@ def extensions(app):
     """
     mail.init_app(app)
     db.init_app(app)
+    jwt.init_app(app)
 
     return None
 
-
+# can this be refactored?
+@jwt.user_claims_loader
 def add_claims_to_access_token(identity):
+    print('add claims to access token')
     if identity['role'] == 'admin':
         return {'roles': 'admin'}
     else:
         return {'roles': 'user'}
+
+# this doesn't seem to be working
+@jwt.token_in_blacklist_loader
+def check_if_token_is_revoked(decrypted_token):
+    print('something is happening!')
+    jti = decrypted_token['jti']
+    revoked_store = redis.StrictRedis.from_url('redis://:devpassword@redis:6379/0')
+    entry = revoked_store.get(jti)
+    if entry is None:
+        return True
+    return entry == 'true'

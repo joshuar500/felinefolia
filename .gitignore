@@ -3,13 +3,11 @@
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
-config/__pycache__/
+*/__pycache__/
 *.py[cod]
 *$py.class
 *.pyc
-lib/__pycache__/
-**/__pycache__/
-
+felinefolia/blueprints/*/__pycache__/
 
 # C extensions
 *.so
