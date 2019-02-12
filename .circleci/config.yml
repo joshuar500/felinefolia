@@ -13,7 +13,7 @@ jobs:
       - run: ls -la
       - run: docker-compose -f docker-compose.dev.yml build && docker-compose -f docker-compose.dev.yml up -d
       - run: echo "Running tests! Tests passed!"
-      - run: docker-compose down
+      - run: docker-compose -f docker-compose.dev.yml down
       - run: echo "We out here!"
   deployment:
     docker:
