@@ -8,6 +8,7 @@ jobs:
       - attach_workspace:
           at: ~/felinefolia
       - setup_remote_docker
+      - run: ls -la
       - run: docker-compose -f ~/felinefolia/docker-compose.dev.yml build && docker-compose -f ~/felinefolia/docker-compose.dev.yml up -d
       - run: echo "Running tests! Tests passed!"
       - run: docker-compose down
