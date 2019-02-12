@@ -3,10 +3,12 @@ jobs:
   test:
     docker:
       - image: circleci/python:3.6.1
+    working_directory: ~/felinefolia
     steps:
-      - checkout
+      - attach_workspace:
+          at: ~/felinefolia
       - setup_remote_docker
-      - run: docker-compose -f docker-compose.dev.yml build && docker-compose -f docker-compose.dev.yml up
+      - run: docker-compose -f docker-compose.dev.yml build && docker-compose -f docker-compose.dev.yml up -d
       - run: echo "Running tests! Tests passed!"
       - run: docker-compose down
       - run: echo "We out here!"
