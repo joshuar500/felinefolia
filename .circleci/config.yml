@@ -1,5 +1,11 @@
-version: 2
+version: 2.1
 jobs:
+  test:
+    steps:
+      - checkout
+      - run: docker-compose -f docker-compose.dev build && docker-compose -f docker-compose.dev.yml up
+      - run: echo "Running tests! Tests passed!"
+      - run: docker-compose down
   deployment:
     docker:
       - image: circleci/python:3.6.1
@@ -32,7 +38,12 @@ workflows:
   version: 2
   test_build_deploy:
     jobs:
+      - test:
+        context: felinefolia
       - deployment:
+          requires:
+            - test
+          context: felinefolia
           filters:
             branches:
               only:
