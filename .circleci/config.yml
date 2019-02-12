@@ -5,7 +5,7 @@ jobs:
       - image: circleci/python:3.6.1
     steps:
       - checkout
-      - run: docker-compose -f docker-compose.dev build && docker-compose -f docker-compose.dev.yml up
+      - run: docker-compose -f docker-compose.dev.yml build && docker-compose -f docker-compose.dev.yml up
       - run: echo "Running tests! Tests passed!"
       - run: docker-compose down
       - run: echo "We out here!"
