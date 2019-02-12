@@ -6,6 +6,7 @@ jobs:
       - run: docker-compose -f docker-compose.dev build && docker-compose -f docker-compose.dev.yml up
       - run: echo "Running tests! Tests passed!"
       - run: docker-compose down
+      - run: echo "We out here!"
   deployment:
     docker:
       - image: circleci/python:3.6.1
