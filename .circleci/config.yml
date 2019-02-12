@@ -15,7 +15,6 @@ jobs:
       - run: echo "Running tests! Tests passed!"
       - run: docker-compose -f docker-compose.dev.yml down
       - run: echo "We out here!"
-      - run: process.exit(1)
   deployment:
     docker:
       - image: circleci/python:3.6.1
