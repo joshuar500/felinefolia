@@ -37,7 +37,7 @@ jobs:
             python deploy/create_droplet.py
       - run: mkdir -p tmp
       - run: echo ${DROPLET_IP_ADDRESS} >> tmp/ip_address
-      - persist_to_workspace
+      - persist_to_workspace:
           root: tmp
           paths:
             - ip_address
