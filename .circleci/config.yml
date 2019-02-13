@@ -42,16 +42,23 @@ jobs:
   deployment:
     executor: ff-executor
     steps:
-      # - add_ssh_keys:
-      #     fingerprints:
-      #       - "fd:cc:de:48:c6:21:94:bb:6d:bc:71:ef:9a:52:e5:bb"
+      - add_ssh_keys:
+          fingerprints:
+            - "4a:11:e3:b9:7e:b1:3c:76:f2:80:22:28:67:15:82:45"
       - attach_workspace:
           at: ~/felinefolia
       - run: ls -la
       - run: cat ip_address
       - run:
-           name: Add FelineFolia to known hosts
-           command: ssh-keyscan -H ${SSH_SERVER} >> ~/.ssh/known_hosts
+          name: Add string in file to path
+          command: /
+            cat filename | while read LINE; do
+                echo 'export DROPLET_IP_ADDRESS="$LINE"' >> $BASH_ENV
+            done
+      - run: echo ${DROPLET_IP_ADDRESS}
+      # - run:
+      #      name: Add FelineFolia to known hosts
+      #      command: ssh-keyscan -H ${SSH_SERVER} >> ~/.ssh/known_hosts
       - deploy:
           name: Deploy & Alias.
           command: |

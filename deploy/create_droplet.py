@@ -10,7 +10,7 @@ droplet = digitalocean.Droplet(token='2b63ea6b8711ce73ee616872c31b7e6dab2b2c1b16
                                region='sfo2',
                                size='s-1vcpu-1gb',
                                image='coreos-stable',
-                               ssh_keys=['29:78:b3:d0:b7:40:d0:5f:05:f8:22:9c:16:f3:f8:f5'],
+                               ssh_keys=['29:78:b3:d0:b7:40:d0:5f:05:f8:22:9c:16:f3:f8:f5', '4a:11:e3:b9:7e:b1:3c:76:f2:80:22:28:67:15:82:45'],
                                ipv6=False,
                                user_data=None,
                                private_networking=None,
