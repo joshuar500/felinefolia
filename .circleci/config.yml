@@ -69,6 +69,7 @@ jobs:
               echo "This failed miserably!"
             fi
 workflows:
+  version: 2
   test_build_deploy:
     jobs:
       - test:
