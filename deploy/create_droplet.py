@@ -1,4 +1,5 @@
 import os
+import subprocess
 import digitalocean
 
 # TODO: Somebody make this look pretty
@@ -27,7 +28,12 @@ def check_is_complete():
       # Load additional data for droplet after creation
       droplet.load()
       print(droplet.ip_address)
-      os.environ['DROPLET_IP_ADDRESS'] = droplet.ip_address
+      
+      # this doesn't work
+      # os.environ['DROPLET_IP_ADDRESS'] = droplet.ip_address
+
+      bash_cmd = 'echo "export DROPLET_IP_ADDRESS=' + droplet.ip_address + '" >> $BASH_ENV'
+      subprocess.Popen(bash_cmd)
 
 try:
   check_is_complete()
