@@ -15,6 +15,19 @@ jobs:
       - run: echo "Running tests! Tests passed!"
       - run: docker-compose -f docker-compose.dev.yml down
       - run: echo "We out here!"
+  makedroplet:
+    docker:
+      - image: circleci/python:3.6.1
+    working_directory: ~/felinefolia
+    steps:
+      - attach_workspace:
+          at: ~/felinefolia
+      - checkout
+      - run: echo "Creating droplet"
+      - run: pip install -r deploy/requirements.txt
+      - run: python deploy/create_droplet.py
+      - run: echo 'export $DROPLET_IP_ADDRESS' >> $BASH_ENV
+      - run: echo ${DROPLET_IP_ADDRESS}
   deployment:
     docker:
       - image: circleci/python:3.6.1
@@ -25,6 +38,7 @@ jobs:
       #       - "fd:cc:de:48:c6:21:94:bb:6d:bc:71:ef:9a:52:e5:bb"
       - attach_workspace:
           at: ~/felinefolia
+      - run: echo ${DROPLET_IP_ADDRESS}
       - run:
            name: Add FelineFolia to known hosts
            command: ssh-keyscan -H ${SSH_SERVER} >> ~/.ssh/known_hosts
@@ -49,9 +63,14 @@ workflows:
     jobs:
       - test:
           context: felinefolia
+      - makedroplet:
+          requires:
+            -test
+          context: felinefolia
       - deployment:
           requires:
             - test
+            - makedroplet
           context: felinefolia
           filters:
             branches:
