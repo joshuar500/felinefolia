@@ -23,6 +23,8 @@ jobs:
       - attach_workspace:
           at: ~/felinefolia
       - checkout
+      - run: python3 -m venv venv
+      - run: . venv/bin/activate
       - run: echo "Creating droplet"
       - run: pip install -r deploy/requirements.txt
       - run: python deploy/create_droplet.py
