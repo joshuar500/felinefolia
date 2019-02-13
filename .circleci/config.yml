@@ -65,7 +65,7 @@ workflows:
           context: felinefolia
       - makedroplet:
           requires:
-            -test
+            - test
           context: felinefolia
       - deployment:
           requires:
