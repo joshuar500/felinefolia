@@ -48,7 +48,7 @@ jobs:
       - attach_workspace:
           at: ~/felinefolia
       - run: ls -la
-      - run: cat ~/felinefolia/tmp/ip_address
+      - run: cat ip_address
       - run:
            name: Add FelineFolia to known hosts
            command: ssh-keyscan -H ${SSH_SERVER} >> ~/.ssh/known_hosts
