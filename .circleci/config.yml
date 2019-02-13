@@ -23,10 +23,11 @@ jobs:
       - attach_workspace:
           at: ~/felinefolia
       - checkout
-      - run: python3 -m venv venv
-      - run: . venv/bin/activate
-      - run: echo "Creating droplet"
-      - run: pip install -r deploy/requirements.txt
+      - run:
+          name: Install Python deps in a venv
+          command: |
+            sudo pip install pipenv
+            pipenv install -r deploy/requirements.txt
       - run: python deploy/create_droplet.py
       - run: echo 'export $DROPLET_IP_ADDRESS' >> $BASH_ENV
       - run: echo ${DROPLET_IP_ADDRESS}
