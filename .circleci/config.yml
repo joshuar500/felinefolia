@@ -36,7 +36,7 @@ jobs:
       - run: mkdir -p tmp
       - run: echo ${DROPLET_IP_ADDRESS} > tmp/ip_address
       - persist_to_workspace:
-          root: ~/felinefolia/tmp
+          root: tmp
           paths:
             - ip_address
   deployment:
@@ -47,7 +47,8 @@ jobs:
       #       - "fd:cc:de:48:c6:21:94:bb:6d:bc:71:ef:9a:52:e5:bb"
       - attach_workspace:
           at: ~/felinefolia
-      - run: cat tmp/ip_address
+      - run: ls -la
+      - run: cat ~/felinefolia/tmp/ip_address
       - run:
            name: Add FelineFolia to known hosts
            command: ssh-keyscan -H ${SSH_SERVER} >> ~/.ssh/known_hosts
