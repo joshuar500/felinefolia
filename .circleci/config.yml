@@ -2,7 +2,7 @@ version: 2
 jobs:
   test:
     docker:
-      - image: circleci/python:3.6.1
+      - image: circleci/python:3.6.2-stretch-browsers
     working_directory: ~/felinefolia
     steps:
       - attach_workspace:
@@ -17,7 +17,7 @@ jobs:
       - run: echo "We out here!"
   makedroplet:
     docker:
-      - image: circleci/python:3.6.1
+      - image: circleci/python:3.6.2-stretch-browsers
     working_directory: ~/felinefolia
     steps:
       - attach_workspace:
@@ -32,7 +32,7 @@ jobs:
       - run: echo ${DROPLET_IP_ADDRESS}
   deployment:
     docker:
-      - image: circleci/python:3.6.1
+      - image: circleci/python:3.6.2-stretch-browsers
     working_directory: ~/felinefolia
     steps:
       # - add_ssh_keys:
