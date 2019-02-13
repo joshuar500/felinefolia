@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 executors:
   ff-executor:
@@ -37,6 +37,10 @@ jobs:
             python deploy/create_droplet.py
       - run: mkdir -p tmp
       - run: echo ${DROPLET_IP_ADDRESS} >> tmp/ip_address
+      - persist_to_workspace
+          root: tmp
+          paths:
+            - ip_address
   deployment:
     executor: ff-executor
     steps:
@@ -65,7 +69,7 @@ jobs:
               echo "This failed miserably!"
             fi
 workflows:
-  version: 2
+  version: 2.1
   test_build_deploy:
     jobs:
       - test:
