@@ -33,7 +33,7 @@ def check_is_complete():
       # os.environ['DROPLET_IP_ADDRESS'] = droplet.ip_address
 
       bash_cmd = 'echo "export DROPLET_IP_ADDRESS=' + droplet.ip_address + '" >> $BASH_ENV'
-      subprocess.Popen(bash_cmd)
+      subprocess.Popen(bash_cmd, shell=True)
 
 try:
   check_is_complete()
