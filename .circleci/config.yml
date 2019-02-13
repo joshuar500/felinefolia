@@ -32,8 +32,6 @@ jobs:
             . venv/bin/activate
             pip install -r deploy/requirements.txt
             python deploy/create_droplet.py
-            echo $DROPLET_IP_ADDRESS
-            echo 'export $DROPLET_IP_ADDRESS' >> $BASH_ENV
       - run: echo ${DROPLET_IP_ADDRESS}
   deployment:
     docker:
