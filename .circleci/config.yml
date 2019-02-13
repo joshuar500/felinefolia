@@ -66,7 +66,7 @@ jobs:
               echo "Building Master Branch!"
               ssh ${SSH_USER}@${SSH_SERVER} 'docker-compose up --build'
             else
-              echo "This failed miserably!"
+              echo "This failed miserably!!"
             fi
 workflows:
   version: 2
