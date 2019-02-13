@@ -15,7 +15,7 @@ jobs:
       - run: echo "Running tests! Tests passed!"
       - run: docker-compose -f docker-compose.dev.yml down
       - run: echo "We out here!"
-  makedroplet:
+  make_droplet:
     docker:
       - image: circleci/python:3.6.2-stretch-browsers
     working_directory: ~/felinefolia
@@ -68,18 +68,18 @@ workflows:
     jobs:
       - test:
           context: felinefolia
-      - makedroplet:
+      - make_droplet:
           requires:
             - test
           context: felinefolia
       - deployment:
           requires:
             - test
-            - makedroplet
+            - make_droplet
           context: felinefolia
-          filters:
-            branches:
-              only:
-                - development
-                - master
-                - production
+          # filters:
+          #   branches:
+          #     only:
+          #       - development
+          #       - master
+          #       - production
