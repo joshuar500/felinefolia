@@ -53,7 +53,7 @@ jobs:
           name: Add string in file to path
           command: /
             cat filename | while read LINE; do
-                echo 'export DROPLET_IP_ADDRESS="$LINE"' >> $BASH_ENV
+              echo 'export DROPLET_IP_ADDRESS="$LINE"' >> $BASH_ENV
             done
       - run: echo ${DROPLET_IP_ADDRESS}
       # - run:
