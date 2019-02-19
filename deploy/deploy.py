@@ -58,6 +58,7 @@ def wait_for_ip(droplet):
 def save_ip_to_file(ip_address):
   # TODO: duplicate code
   path_to_save = pathlib.Path(__file__).parent / 'tmp'
+  print(path_to_save)
   file_to_open = 'ip_address.txt'
   mkdir_p(path_to_save)
   with safe_open_w(path_to_save / file_to_open) as f:
