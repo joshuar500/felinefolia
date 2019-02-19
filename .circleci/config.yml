@@ -32,9 +32,7 @@ jobs:
           name: Install Python deps in a venv and create droplet
           command: |
             pip install -r deploy/requirements.txt
-            python deploy/create_droplet.py
-      - run: mkdir -p tmp
-      - run: echo ${DROPLET_IP_ADDRESS} > tmp/ip_address
+            python deploy/deploy.py create_droplet
       - persist_to_workspace:
           root: tmp
           paths:
@@ -47,15 +45,12 @@ jobs:
             - "4a:11:e3:b9:7e:b1:3c:76:f2:80:22:28:67:15:82:45"
       - attach_workspace:
           at: ~/felinefolia
-      - run: ls -la
-      - run: cat ip_address
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
       - run:
-          name: Add string in file to path
-          command: /
-            cat filename | while read LINE; do
-              echo 'export DROPLET_IP_ADDRESS="$LINE"' >> $BASH_ENV
-            done
-      - run: echo ${DROPLET_IP_ADDRESS}
+          name: Install Python deps in a venv
+          command: |
+            pip install -r deploy/requirements.txt
       # - run:
       #      name: Add FelineFolia to known hosts
       #      command: ssh-keyscan -H ${SSH_SERVER} >> ~/.ssh/known_hosts
@@ -66,12 +61,12 @@ jobs:
               now build -t ${NOW_TOKEN} -n=felinefolia-react --static
               now -t ${NOW_TOKEN} alias felinefolia-react-production.now.sh
             elif [ "${CIRCLE_BRANCH}" == "development" ]; then
-              now build -t ${NOW_TOKEN} -n=felinefolia-react --static
-              now -t ${NOW_TOKEN} alias felinefolia-react-alpha.now.sh
+              python deploy/deploy.py deploy_to_staging
             elif [ "${CIRCLE_BRANCH}" == "master" ]; then
               echo "Building Master Branch!"
               ssh ${SSH_USER}@${SSH_SERVER} 'docker-compose up --build'
             else
+              python deploy/deploy.py deploy_to_staging
               echo "This failed miserably!!"
             fi
 workflows:
