@@ -82,11 +82,13 @@ def deploy_to_droplet(ip_address):
   try:
     client = paramiko.SSHClient()
     # client.load_system_host_keys()
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    # client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     # client.load_system_host_keys('/home/circleci/.ssh/id_rsa_4a11e3b97eb13c76f280222867158245')
-    pkey = paramiko.RSAKey.from_private_key_file('/home/circleci/.ssh/id_rsa_4a11e3b97eb13c76f280222867158245')
+    # pkey = paramiko.RSAKey.from_private_key_file('/home/circleci/.ssh/id_rsa_4a11e3b97eb13c76f280222867158245')
+    client.load_system_host_keys()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     print("*** Connecting...")
-    client.connect(hostname, username=username, pkey=pkey)
+    client.connect(hostname, username=username, password='')
 
     client.exec_command('echo im connected remotely')
     # chan = client.invoke_shell()
