@@ -74,7 +74,7 @@ def deploy_to_droplet(ip_address):
     client = paramiko.SSHClient()
     # client.load_system_host_keys()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    pkey = paramiko.RSAKey.from_private_key_file('/home/felinefolia/.ssh/id_rsa_4a11e3b97eb13c76f280222867158245')
+    pkey = paramiko.RSAKey.from_private_key_file('/home/circleci/.ssh/id_rsa_4a11e3b97eb13c76f280222867158245')
     print("*** Connecting...")
     if not UseGSSAPI and not DoGSSAPIKeyExchange:
         client.connect(hostname, port, username, pkey)
