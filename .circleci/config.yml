@@ -34,9 +34,9 @@ jobs:
             pip install -r deploy/requirements.txt
             python deploy/deploy.py create_droplet
       - persist_to_workspace:
-          root: tmp
+          root: deploy
           paths:
-            - ip_address
+            - tmp
   deployment:
     executor: ff-executor
     steps:
