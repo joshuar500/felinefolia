@@ -72,17 +72,19 @@ def deploy_to_droplet(ip_address):
 
   try:
     client = paramiko.SSHClient()
-    client.load_system_host_keys()
-    client.set_missing_host_key_policy(paramiko.WarningPolicy())
+    # client.load_system_host_keys()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    pkey = paramiko.RSAKey.from_private_key_file('id_rsa')
     print("*** Connecting...")
     if not UseGSSAPI and not DoGSSAPIKeyExchange:
-        client.connect(hostname, port, username)
+        client.connect(hostname, port, username, pkey)
     else:
         try:
             client.connect(
                 hostname,
                 port,
                 username,
+                pkey,
                 gss_auth=UseGSSAPI,
                 gss_kex=DoGSSAPIKeyExchange,
             )
