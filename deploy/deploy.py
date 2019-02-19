@@ -11,7 +11,7 @@ import errno
 
 UseGSSAPI = (
     paramiko.GSS_AUTH_AVAILABLE
-)  # enable "gssapi-with-mic" authentication, if supported by your python installation
+) # enable "gssapi-with-mic" authentication, if supported by your python installation
 DoGSSAPIKeyExchange = (
     paramiko.GSS_AUTH_AVAILABLE
 ) # enable "gssapi-kex" key exchange, if supported by your python installation
@@ -67,7 +67,7 @@ def get_ip_from_file():
 
 def deploy_to_droplet(ip_address):
   hostname = ip_address
-  port = 22
+  # port = 22
   username = 'coreos'
 
   try:
@@ -76,24 +76,7 @@ def deploy_to_droplet(ip_address):
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     pkey = paramiko.RSAKey.from_private_key_file('/home/circleci/.ssh/id_rsa_4a11e3b97eb13c76f280222867158245')
     print("*** Connecting...")
-    if not UseGSSAPI and not DoGSSAPIKeyExchange:
-        client.connect(hostname, port, username, pkey)
-    else:
-        try:
-            client.connect(
-                hostname,
-                port,
-                username,
-                pkey,
-                gss_auth=UseGSSAPI,
-                gss_kex=DoGSSAPIKeyExchange,
-            )
-        except Exception:
-            # traceback.print_exc()
-            # password = getpass.getpass(
-            #     "Password for %s@%s: " % (username, hostname)
-            # )
-            client.connect(hostname, port, username)
+    client.connect(hostname, username=username, pkey=pkey)
 
     client.exec_command('echo im connected remotely')
     # chan = client.invoke_shell()
