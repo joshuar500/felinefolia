@@ -8,6 +8,15 @@ import digitalocean
 import paramiko
 import traceback
 import errno
+import logging
+
+
+logger = paramiko.util.logging.getLogger()
+hdlr = logging.FileHandler('app.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+logger.addHandler(hdlr) 
+logger.setLevel(logging.INFO)
 
 UseGSSAPI = (
     paramiko.GSS_AUTH_AVAILABLE
@@ -74,10 +83,10 @@ def deploy_to_droplet(ip_address):
     client = paramiko.SSHClient()
     # client.load_system_host_keys()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.load_system_host_keys('/home/circleci/.ssh/id_rsa_4a11e3b97eb13c76f280222867158245')
-    # pkey = paramiko.RSAKey.from_private_key_file('/home/circleci/.ssh/id_rsa_4a11e3b97eb13c76f280222867158245')
+    # client.load_system_host_keys('/home/circleci/.ssh/id_rsa_4a11e3b97eb13c76f280222867158245')
+    pkey = paramiko.RSAKey.from_private_key_file('/home/circleci/.ssh/id_rsa_4a11e3b97eb13c76f280222867158245')
     print("*** Connecting...")
-    client.connect(hostname, username=username)
+    client.connect(hostname, username=username, pkey=pkey)
 
     client.exec_command('echo im connected remotely')
     # chan = client.invoke_shell()
@@ -89,6 +98,7 @@ def deploy_to_droplet(ip_address):
 
   except Exception as e:
       print("*** Caught exception: %s: %s" % (e.__class__, e))
+      logging.debug(e)
       traceback.print_exc()
       try:
           client.close()
