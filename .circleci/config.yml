@@ -45,6 +45,7 @@ jobs:
             - "4a:11:e3:b9:7e:b1:3c:76:f2:80:22:28:67:15:82:45"
       - attach_workspace:
           at: ~/felinefolia
+      - checkout
       - run: sudo chown -R circleci:circleci /usr/local/bin
       - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
       - run:
