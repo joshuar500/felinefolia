@@ -9,11 +9,6 @@ import paramiko
 import traceback
 import errno
 
-try:
-  import interactive
-except ImportError:
-  from . import interactive
-
 UseGSSAPI = (
     paramiko.GSS_AUTH_AVAILABLE
 )  # enable "gssapi-with-mic" authentication, if supported by your python installation
