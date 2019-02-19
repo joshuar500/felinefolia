@@ -76,19 +76,21 @@ def get_ip_from_file():
 
 def deploy_to_droplet(ip_address):
   hostname = ip_address
-  # port = 22
+  port = 22
   username = 'coreos'
 
   try:
-    client = paramiko.SSHClient()
+    client = paramiko.Transport((hostname, port))
+    client.auth_none(username)
+    # client = paramiko.SSHClient()
     # client.load_system_host_keys()
     # client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     # client.load_system_host_keys('/home/circleci/.ssh/id_rsa_4a11e3b97eb13c76f280222867158245')
     # pkey = paramiko.RSAKey.from_private_key_file('/home/circleci/.ssh/id_rsa_4a11e3b97eb13c76f280222867158245')
-    client.load_system_host_keys()
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    # client.load_system_host_keys()
+    # client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     print("*** Connecting...")
-    client.connect(hostname, username=username, password='')
+    # client.connect(hostname, username=username)
 
     client.exec_command('echo im connected remotely')
     # chan = client.invoke_shell()
