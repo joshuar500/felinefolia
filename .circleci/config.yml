@@ -20,24 +20,23 @@ jobs:
       - run: echo "Running tests! Tests passed!"
       - run: docker-compose -f docker-compose.dev.yml down
       - run: echo "We out here!"
-  make_droplet:
-    executor: ff-executor
-    steps:
-      - attach_workspace:
-          at: ~/felinefolia
-      - checkout
-      - run: ls -la
-      - run: sudo chown -R circleci:circleci /usr/local/bin
-      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
-      - run:
-          name: Install Python deps in a venv and create droplet
-          command: |
-            pip install -r deploy/requirements.txt
-            python deploy/deploy.py create_droplet
-      - persist_to_workspace:
-          root: deploy
-          paths:
-            - tmp/*
+  # make_droplet:
+  #   executor: ff-executor
+  #   steps:
+  #     - attach_workspace:
+  #         at: ~/felinefolia
+  #     - checkout
+  #     - run: sudo chown -R circleci:circleci /usr/local/bin
+  #     - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+  #     - run:
+  #         name: Install Python deps in a venv and create droplet
+  #         command: |
+  #           pip install -r deploy/requirements.txt
+  #           python deploy/deploy.py create_droplet
+  #     - persist_to_workspace:
+  #         root: deploy
+  #         paths:
+  #           - tmp/*
   deployment:
     executor: ff-executor
     steps:
@@ -46,7 +45,7 @@ jobs:
             - "4a:11:e3:b9:7e:b1:3c:76:f2:80:22:28:67:15:82:45"
       - attach_workspace:
           at: ~/felinefolia
-      - run: ls -la
+      - checkout
       - run: sudo chown -R circleci:circleci /usr/local/bin
       - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
       - run:
@@ -77,14 +76,14 @@ workflows:
     jobs:
       - test:
           context: felinefolia
-      - make_droplet:
-          requires:
-            - test
-          context: felinefolia
+      # - make_droplet:
+      #     requires:
+      #       - test
+      #     context: felinefolia
       - deployment:
           requires:
             - test
-            - make_droplet
+            # - make_droplet
           context: felinefolia
           # filters:
           #   branches:

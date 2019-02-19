@@ -45,13 +45,6 @@ def wait_for_ip(droplet):
       # Load additional data for droplet after creation
       droplet.load()
       print(droplet.ip_address)
-      
-      # this doesn't work
-      # os.environ['DROPLET_IP_ADDRESS'] = droplet.ip_address
-      
-      # this does work but only good for same job in circleci
-      # bash_cmd = 'echo \'export DROPLET_IP_ADDRESS="' + droplet.ip_address + '"\' >> $BASH_ENV'
-      # subprocess.Popen(bash_cmd, shell=True)
 
       return droplet.ip_address
 
@@ -133,21 +126,16 @@ def safe_open_w(path):
     return open(path, 'w')
 
 def main(argv):
-  if argv[1] == 'create_droplet':
+  if argv[1] == 'deploy_to_staging':
     try:
       print('Creating droplet...')
       droplet = create_droplet()
       ip_address = wait_for_ip(droplet)
       save_ip_to_file(ip_address)
-    except TimeoutError:
-      print('ERROR: Creating droplet timed out')
-  if argv[1] == 'deploy_to_staging':
-    try:
-      print('Deploying to staging...')
-      ip_address = get_ip_from_file()
+      print('Deploying to droplet...')
       deploy_to_droplet(ip_address)
     except TimeoutError:
-      print('ERROR: Deploying to Staging')
+      print('ERROR: Creating droplet timed out')
     
 
 if __name__ == '__main__':
