@@ -68,6 +68,17 @@ def get_ip_from_file():
         return ip_address
 
 
+def add_to_hosts(ip_address):
+    print('Adding ip to known_hosts')
+    bash_command = 'ssh-keyscan -H ' + ip_address + ' >> ~/.ssh/known_hosts'
+    process = subprocess.Popen(bash_command, shell=True)
+    output, error = process.communicate()
+    if error:
+      print(error)
+    else:
+      print(output)
+
+
 def deploy_to_droplet(client):
     print("*** Here we go!\n")
 
@@ -79,17 +90,6 @@ def deploy_to_droplet(client):
     (stdin, stdout, stderr) = client.exec_command('sudo bash /home/core/start.sh -s')
     stdout = stdout.readlines()
     print(stdout)
-
-
-def add_to_hosts(ip_address):
-    print('Adding ip to known_hosts')
-    bash_command = 'ssh-keyscan -H ' + ip_address + ' >> ~/.ssh/known_hosts'
-    process = subprocess.Popen(bash_command, shell=True)
-    output, error = process.communicate()
-    if error:
-      print(error)
-    else:
-      print(output)
 
 
 def connect_to_client(ip_address):
