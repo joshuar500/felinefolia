@@ -14,12 +14,24 @@ display_help() {
 
 start_development () {
   echo "Starting development server"
-  docker-compose -f docker-compose.dev build && docker-compose -f docker-compose.dev.yml up
+  docker-compose -f docker-compose.dev.yml build && docker-compose -f docker-compose.dev.yml up
 }
 
 start_production () {
   echo "Starting production server"
   docker-compose -f docker-compose.prod.yml build && docker-compose -f docker-compose.prod.yml up
+}
+
+setup_staging () {
+  echo "Setting up staging environment"
+  mkdir -p /opt/bin
+  curl -L `curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r '.assets[].browser_download_url | select(contains("Linux") and contains("x86_64"))'` > /opt/bin/docker-compose
+  chmod +x /opt/bin/docker-compose
+}
+
+start_staging () {
+  echo "Starting staging server"
+  docker-compose -f docker-compose.dev.yml build && docker-compose -f docker-compose.dev.yml up
 }
 
 for var in "$@"
@@ -33,6 +45,11 @@ for var in "$@"
           start_development
           exit 0
           ;;
+      -s | --staging)
+          setup_staging
+          start_staging
+          exit 0
+          ;;
       -p | --production)
           start_production
           exit 0
@@ -43,6 +60,7 @@ for var in "$@"
           exit 1
           ;;
       *)  # No more options
+          echo "Need a command."
           DEPLOY_ARGS_SET=true
           ;;
     esac
