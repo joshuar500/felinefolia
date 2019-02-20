@@ -93,6 +93,7 @@ def deploy_to_droplet(client):
 
 
 def connect_to_client(ip_address):
+    print('Establishing Connection...')
     hostname = ip_address
     port = 22
     username = 'core'
