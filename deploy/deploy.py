@@ -82,7 +82,7 @@ def deploy_to_droplet(client):
 
 
 def add_to_hosts(ip_address):
-    bash_command = 'ssh-keyscan -H ${ip_address} >> ~/.ssh/known_hosts'
+    bash_command = 'ssh-keyscan -H {ip_address} >> ~/.ssh/known_hosts'
     process = subprocess.Popen(bash_command, shell=True)
     output, error = process.communicate()
     if error:
