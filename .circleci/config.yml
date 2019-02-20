@@ -75,15 +75,15 @@ workflows:
   version: 2
   test_build_deploy:
     jobs:
-      - test:
-          context: felinefolia
+      # - test:
+      #     context: felinefolia
       # - make_droplet:
       #     requires:
       #       - test
       #     context: felinefolia
       - deployment:
-          requires:
-            - test
+          # requires:
+          #   - test
             # - make_droplet
           context: felinefolia
           # filters:

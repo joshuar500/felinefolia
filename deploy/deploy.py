@@ -81,6 +81,11 @@ def deploy_to_droplet(client):
     print(stdout)
 
 
+def add_to_hosts(ip_address):
+    bash_command = 'ssh-keyscan -H ${ip_address} >> ~/.ssh/known_hosts'
+    process = subprocess.Popen(bash_command, shell=True)
+
+
 def connect_to_client(ip_address):
     hostname = ip_address
     port = 22
@@ -216,6 +221,7 @@ def main(argv):
             # ip_address = wait_for_ip(droplet)
             # save_ip_to_file(ip_address)
             print('Deploying to droplet...')
+            add_to_hosts('167.99.161.25')
             client = connect_to_client('167.99.161.25')
             deploy_to_droplet(client)
             client.close()
