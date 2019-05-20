@@ -4,16 +4,18 @@
 
 You need [Docker Community Edition](https://store.docker.com/search?offering=community&type=edition) installed.
 
-When that is done installing, run these commands in your terminal:
+When that is done installing, run these commands in your terminal (you may need to `chmod` for pemissions):
 
 OSX:
 ```
+python setup.py install
 ./start.sh
 ```
 
 WIN10:
 ```
-./start.sh
+python setup.py install
+start.bat
 ```
 
 Then open a new terminal when that is finished building and type this to build the database:
