@@ -5,10 +5,10 @@ import pytz
 from config import settings
 from lib.util_sqlalchemy import ResourceMixin
 from felinefolia.extensions import db
-from felinefolia.blueprints.billing.models.credit_card import CreditCard
-from felinefolia.blueprints.billing.models.coupon import Coupon
-from felinefolia.blueprints.billing.gateways.stripecom import Card as PaymentCard
-from felinefolia.blueprints.billing.gateways.stripecom import \
+from felinefolia.resources.billing.models.credit_card import CreditCard
+from felinefolia.resources.billing.models.coupon import Coupon
+from felinefolia.resources.billing.gateways.stripecom import Card as PaymentCard
+from felinefolia.resources.billing.gateways.stripecom import \
     Customer as PaymentCustomer, Subscription as PaymentSubscription
 
 

@@ -16,7 +16,7 @@ def make_auth_response(current_user):
     refresh_jti = get_jti(encoded_token=refresh_token)
 
     # prevent circular imports
-    from felinefolia.blueprints.user.tasks import (set_revoked_token)
+    from felinefolia.resources.user.tasks import (set_revoked_token)
     set_revoked_token(access_jti, 'false')
     set_revoked_token(refresh_jti, 'false')
 

@@ -1,7 +1,7 @@
 from felinefolia.app import create_celery_app
-from felinefolia.blueprints.user.models import User
-from felinefolia.blueprints.billing.models.credit_card import CreditCard
-from felinefolia.blueprints.billing.models.coupon import Coupon
+from felinefolia.resources.user.models import User
+from felinefolia.resources.billing.models.credit_card import CreditCard
+from felinefolia.resources.billing.models.coupon import Coupon
 
 celery = create_celery_app()
 

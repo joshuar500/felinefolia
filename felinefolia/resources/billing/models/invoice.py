@@ -4,9 +4,9 @@ from sqlalchemy import or_
 
 from lib.util_sqlalchemy import ResourceMixin
 from felinefolia.extensions import db
-from felinefolia.blueprints.billing.models.credit_card import CreditCard
-from felinefolia.blueprints.billing.models.coupon import Coupon
-from felinefolia.blueprints.billing.gateways.stripecom import (
+from felinefolia.resources.billing.models.credit_card import CreditCard
+from felinefolia.resources.billing.models.coupon import Coupon
+from felinefolia.resources.billing.gateways.stripecom import (
     Customer as PaymentCustomer,
     Charge as PaymentCharge,
     Invoice as PaymentInvoice
@@ -53,7 +53,7 @@ class Invoice(ResourceMixin, db.Model):
         :type query: str
         :return: SQLAlchemy filter
         """
-        from felinefolia.blueprints.user.models import User
+        from felinefolia.resources.user.models import User
 
         if not query:
             return ''
@@ -124,7 +124,7 @@ class Invoice(ResourceMixin, db.Model):
         :return: User instance
         """
         # Avoid circular imports.
-        from felinefolia.blueprints.user.models import User
+        from felinefolia.resources.user.models import User
 
         # Only save the invoice if the user is valid at this point.
         id = parsed_event.get('payment_id')

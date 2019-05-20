@@ -4,7 +4,7 @@ from hashlib import md5
 
 import pytz
 from flask import current_app
-from sqlalchemy import or_, inspect
+from sqlalchemy import or_
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_restful import fields
 
@@ -13,10 +13,10 @@ from itsdangerous import URLSafeTimedSerializer, \
 
 from lib.util_sqlalchemy import ResourceMixin, AwareDateTime
 
-from felinefolia.blueprints.billing.models.credit_card import CreditCard
-from felinefolia.blueprints.billing.models.subscription import Subscription
-from felinefolia.blueprints.billing.models.invoice import Invoice
-from felinefolia.blueprints.contact.models import Comment
+from felinefolia.resources.billing.models.credit_card import CreditCard
+from felinefolia.resources.billing.models.subscription import Subscription
+from felinefolia.resources.billing.models.invoice import Invoice
+from felinefolia.resources.contact.models import Comment
 from felinefolia.extensions import db
 
 
@@ -156,7 +156,7 @@ class User(ResourceMixin, db.Model):
         reset_token = u.serialize_token()
 
         # This prevents circular imports.
-        from felinefolia.blueprints.user.tasks import (
+        from felinefolia.resources.user.tasks import (
             deliver_password_reset_email)
         deliver_password_reset_email.delay(u.id, reset_token)
 

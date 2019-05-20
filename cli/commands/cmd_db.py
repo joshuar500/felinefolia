@@ -4,7 +4,7 @@ from sqlalchemy_utils import database_exists, create_database
 
 from felinefolia.app import create_app
 from felinefolia.extensions import db
-from felinefolia.blueprints.user.models import User
+from felinefolia.resources.user.models import User
 
 # Create an app context for the database connection.
 app = create_app()

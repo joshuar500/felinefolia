@@ -1,15 +1,10 @@
-import secrets
-import string
-import json
-
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity
 )
 
-from lib.util_decorators import admin_required
-from felinefolia.blueprints.billing.models.subscription import Subscription
+from felinefolia.resources.billing.models.subscription import Subscription
 
 register_parser = reqparse.RequestParser()
 register_parser.add_argument(
@@ -18,14 +13,17 @@ register_parser.add_argument(
 
 
 class Subscribe(Resource):
+    """
+    Create a monthly subscription for a user
+
+
+    """
     @jwt_required
     def post(self):
         current_user = get_jwt_identity()
         args = register_parser.parse_args()
         print(args.id)
-        # json_args = json.loads(args.token)
-        # print(json_args['token'])
-        from felinefolia.blueprints.user.models import User
+        from felinefolia.resources.user.models import User
         user = User.find_by_identity(current_user['username'])
         if user and user.subscription:
             print('User has a subscription!')
@@ -33,6 +31,7 @@ class Subscribe(Resource):
         # TODO:
         # 1. get the plan from args
         subscription_plan = Subscription.get_plan_by_id(0)
+        print(subscription_plan)  # remove this print
         # 2. guard against invalid plan
         # 3. get user, create plan
         subscription = Subscription()

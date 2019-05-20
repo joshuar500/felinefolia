@@ -1,18 +1,13 @@
-import secrets
-import string
-import json
-
 from flask import (make_response)
 from flask_restful import Resource
 from flask_jwt_extended import (
     jwt_required,
-    get_jwt_identity,
     set_access_cookies,
     set_refresh_cookies,
     get_raw_jwt
 )
 
-from .models import User
+from felinefolia.resources.user.models import User
 from .helpers import make_auth_response
 from .parsers import registration_parser, login_parser
 
@@ -33,7 +28,7 @@ class Register(Resource):
                 'email': user.email
             }
 
-            from felinefolia.blueprints.user.tasks import add_subscriber
+            from felinefolia.resources.user.tasks import add_subscriber
             add_subscriber(user.email)
 
             resp = make_auth_response(current_user)
@@ -68,7 +63,7 @@ class Logout(Resource):
         jti = get_raw_jwt()['jti']
 
         # prevent circular imports
-        from felinefolia.blueprints.user.tasks import (set_revoked_token)
+        from felinefolia.resources.user.tasks import (set_revoked_token)
         set_revoked_token(jti, 'true')
 
         resp = make_response()
@@ -76,16 +71,3 @@ class Logout(Resource):
         set_access_cookies(resp, '')  # until i find a more elegant way,
         set_refresh_cookies(resp, '')  # just set access token to empty strings
         return resp
-
-
-class Account(Resource):
-
-    @jwt_required
-    def get(self):
-        current_user = get_jwt_identity()
-        print(current_user)
-        user = User.find_by_identity(current_user['username'])
-        if user:
-            print(user.as_dict())
-            return user.as_dict(), 200
-        return {"Error": "Failed to get account."}, 401

@@ -11,7 +11,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from lib.util_sqlalchemy import ResourceMixin, AwareDateTime
 from lib.money import cents_to_dollars, dollars_to_cents
 from felinefolia.extensions import db
-from felinefolia.blueprints.billing.gateways.stripecom import \
+from felinefolia.resources.billing.gateways.stripecom import \
     Coupon as PaymentCoupon
 
 

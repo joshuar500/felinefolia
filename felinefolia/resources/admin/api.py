@@ -1,14 +1,10 @@
-import secrets
-import string
-import json
-
 from flask_restful import Resource, marshal_with
 from flask_jwt_extended import (
     jwt_required
 )
 
-from felinefolia.blueprints.user.models import User
-from felinefolia.blueprints.contact.models import Comment
+from felinefolia.resources.user.models import User
+from felinefolia.resources.contact.models import Comment
 
 from lib.util_decorators import admin_required
 
@@ -30,6 +26,3 @@ class Users(Resource):
     def get(self):
         all_users = User.query.all()
         return all_users, 200
-
-# api.add_resource(Dashboard, '/dashboard')
-# api.add_resource(Users, '/users')

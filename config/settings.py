@@ -50,11 +50,11 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_REDIS_MAX_CONNECTIONS = 5
 # CELERYBEAT_SCHEDULE = {
 #     'mark-soon-to-expire-credit-cards': {
-#         'task': 'felinefolia.blueprints.billing.tasks.mark_old_credit_cards',
+#         'task': 'felinefolia.resources.billing.tasks.mark_old_credit_cards',
 #         'schedule': crontab(hour=0, minute=0)
 #     },
 #     'expire-old-coupons': {
-#         'task': 'felinefolia.blueprints.billing.tasks.expire_old_coupons',
+#         'task': 'felinefolia.resources.billing.tasks.expire_old_coupons',
 #         'schedule': crontab(hour=0, minute=1)
 #     },
 # }

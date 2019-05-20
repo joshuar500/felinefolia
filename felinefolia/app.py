@@ -1,17 +1,11 @@
 import stripe
 import os
-import redis
 
 from flask import Flask
-from flask_restful import Api
-from flask_jwt_extended import (
-    JWTManager
-)
 from flask_cors import CORS
 from celery import Celery
 
-from felinefolia.blueprints import views
-
+from felinefolia.resources import views
 from felinefolia.extensions import (
     mail,
     db,
@@ -19,7 +13,7 @@ from felinefolia.extensions import (
 )
 
 CELERY_TASK_LIST = [
-    'felinefolia.blueprints.user.tasks',
+    'felinefolia.resources.user.tasks',
 ]
 
 
@@ -49,7 +43,7 @@ def create_celery_app(app=None):
     return celery
 
 
-def create_app(settings_override=None):
+def create_app(testing=False, settings_override=None):
     """
     Create a Flask application using the app factory pattern.
 
@@ -57,6 +51,9 @@ def create_app(settings_override=None):
     :return: Flask app
     """
     app = Flask(__name__, instance_relative_config=True)
+
+    if testing is True:
+        app.config['TESTING'] = True
 
     # TODO: check if production or development server
     CORS(app, resources={r"/*": {"origins": "*"}})

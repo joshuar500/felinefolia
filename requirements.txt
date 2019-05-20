@@ -3,11 +3,14 @@ Flask==1.0.2
 # Application server for both development and production.
 gunicorn==19.9.0
 
-# Testing and static analysis.
-pytest==3.7.1
-pytest-cov==2.5.1
-mock==2.0.0
-flake8==3.5.0
+# Testing and static analysis. (uncomment if you want to test without tox)
+# pytest==3.7.1
+# pytest-cov==2.5.1
+# pytest-factoryboy==2.0.2
+# pytest-flask==0.15.0
+# pytest-runner==4.4
+# flake8==3.5.0
+tox==3.11.1
 
 # CLI.
 Click==6.7

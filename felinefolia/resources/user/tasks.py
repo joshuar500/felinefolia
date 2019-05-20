@@ -1,9 +1,7 @@
 import redis
 import requests
 import json
-from lib.flask_mailplus import send_template_message
 from felinefolia.app import create_celery_app
-from felinefolia.blueprints.user.models import User
 from datetime import timedelta
 
 celery = create_celery_app()
@@ -45,6 +43,6 @@ def deliver_welcome_email(email):
     :param email: E-mail address of new user
     """
 
-    ctx = {'email': email}
+    # ctx = {'email': email}
 
     return None
