@@ -1,1 +1,5 @@
-from felinefolia.blueprints.contact.api import contact
+from .api import (Contact)
+
+__all__ = [
+    'Contact'
+]

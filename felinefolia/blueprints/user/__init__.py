@@ -1,1 +1,8 @@
-from felinefolia.blueprints.user.api import user
+from .api import (Register, Login, Logout, Account)
+
+__all__ = [
+    'Register',
+    'Login',
+    'Logout',
+    'Account'
+]

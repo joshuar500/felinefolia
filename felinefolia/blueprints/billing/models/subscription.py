@@ -94,6 +94,7 @@ class Subscription(ResourceMixin, db.Model):
         user.payment_id = customer.id
         user.name = name
         user.previous_plan = plan
+        user.subscribed = True
         # user.coins = add_subscription_coins(user.coins,
         #                                     Subscription.get_plan_by_id(
         #                                         user.previous_plan),

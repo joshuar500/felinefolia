@@ -35,7 +35,8 @@ class User(ResourceMixin, db.Model):
     subscription = db.relationship(Subscription, uselist=False,
                                    backref='users', passive_deletes=True)
     invoices = db.relationship(Invoice, backref='users', passive_deletes=True)
-    comments = db.relationship(Comment, uselist=False, backref='users', passive_deletes=True)
+    comments = db.relationship(
+        Comment, uselist=False, backref='users', passive_deletes=True)
 
     # Authentication.
     role = db.Column(db.Enum(*ROLE, name='role_types', native_enum=False),
@@ -49,13 +50,15 @@ class User(ResourceMixin, db.Model):
 
     # Business owner
     has_business = db.Column('has_business', db.Boolean(), nullable=False,
-                       server_default='0')
+                             server_default='0')
 
     # Billing.
     name = db.Column(db.String(128), index=True)
     payment_id = db.Column(db.String(128), index=True)
     cancelled_subscription_on = db.Column(AwareDateTime())
     previous_plan = db.Column(db.String(128))
+    subscribed = db.Column('subscribed', db.Boolean(),
+                           nullable=False, server_default='0')
 
     # Activity tracking.
     sign_in_count = db.Column(db.Integer, nullable=False, default=0)
@@ -75,14 +78,22 @@ class User(ResourceMixin, db.Model):
 
     @staticmethod
     def __json__(group=None):
-      _json = {
-        'username': fields.String,
-        'email': fields.String,
-        'role': fields.String,
-        'has_business': fields.String,
-        'name': fields.String
-      }
-      return  _json
+        _json = {
+            'username': fields.String,
+            'email': fields.String,
+            'role': fields.String,
+            'has_business': fields.String,
+            'name': fields.String,
+            'subscribed': fields.Boolean
+        }
+        return _json
+
+    def as_dict(self):
+        return {
+            'username': self.username,
+            'email': self.email,
+            'subscribed': self.subscribed
+        }
 
     @classmethod
     def find_by_identity(cls, identity):
@@ -94,7 +105,7 @@ class User(ResourceMixin, db.Model):
         :return: User instance
         """
         return User.query.filter(
-          (User.email == identity) | (User.username == identity)).first()
+            (User.email == identity) | (User.username == identity)).first()
 
     @classmethod
     def encrypt_password(cls, plaintext_password):

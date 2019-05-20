@@ -1,7 +1,7 @@
-# 
+#
 # DEV ENVIRONMENT CONFIG
 # FOR PROD CONFIG, ASK ADMIN
-# 
+#
 
 from datetime import timedelta
 
@@ -28,6 +28,10 @@ MAIL_USE_TLS = True
 MAIL_USE_SSL = False
 MAIL_USERNAME = 'you@gmail.com'
 MAIL_PASSWORD = 'awesomepassword'
+
+# MailerLite.
+MAILERLITE_API_KEY = 'ca33ab98e21907bd0616b083ab5b4679'
+MAILERLItE_API_URL = 'https://api.mailerlite.com/api/v2/'
 
 # Flask-Babel.
 LANGUAGES = {
@@ -70,6 +74,7 @@ STRIPE_SECRET_KEY = 'sk_test_nIRds9NsBCaZVRrfy28UD6xX'
 STRIPE_PUBLISHABLE_KEY = 'pk_test_8T6wzkJRI6xoB0JgPS9amKS6'
 STRIPE_API_VERSION = '2018-09-24'
 STRIPE_CURRENCY = 'usd'
+# TODO: Update stripe plans
 STRIPE_PLANS = {
     '0': {
         'id': 'regular',

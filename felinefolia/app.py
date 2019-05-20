@@ -10,10 +10,7 @@ from flask_jwt_extended import (
 from flask_cors import CORS
 from celery import Celery
 
-from felinefolia.blueprints.contact import contact
-from felinefolia.blueprints.user import user
-from felinefolia.blueprints.admin import admin
-from felinefolia.blueprints.billing import billing
+from felinefolia.blueprints import views
 
 from felinefolia.extensions import (
     mail,
@@ -22,9 +19,7 @@ from felinefolia.extensions import (
 )
 
 CELERY_TASK_LIST = [
-    # 'snakeeyes.blueprints.contact.tasks',
-    # 'snakeeyes.blueprints.user.tasks',
-    # 'snakeeyes.blueprints.billing.tasks',
+    'felinefolia.blueprints.user.tasks',
 ]
 
 
@@ -78,10 +73,7 @@ def create_app(settings_override=None):
 
     extensions(app)
 
-    app.register_blueprint(contact)
-    app.register_blueprint(user)
-    app.register_blueprint(admin)
-    app.register_blueprint(billing)
+    app.register_blueprint(views.blueprint)
 
     return app
 
@@ -98,23 +90,3 @@ def extensions(app):
     jwt.init_app(app)
 
     return None
-
-# can this be refactored?
-@jwt.user_claims_loader
-def add_claims_to_access_token(identity):
-    print('add claims to access token')
-    if identity['role'] == 'admin':
-        return {'roles': 'admin'}
-    else:
-        return {'roles': 'user'}
-
-# this doesn't seem to be working
-@jwt.token_in_blacklist_loader
-def check_if_token_is_revoked(decrypted_token):
-    print('something is happening!')
-    jti = decrypted_token['jti']
-    revoked_store = redis.StrictRedis.from_url('redis://:devpassword@redis:6379/0')
-    entry = revoked_store.get(jti)
-    if entry is None:
-        return True
-    return entry == 'true'

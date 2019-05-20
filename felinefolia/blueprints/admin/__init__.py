@@ -1,1 +1,6 @@
-from felinefolia.blueprints.admin.api import admin
+from .api import (Dashboard, Users)
+
+__all__ = [
+    'Dashboard',
+    'Users'
+]
