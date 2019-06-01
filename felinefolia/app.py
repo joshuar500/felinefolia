@@ -12,6 +12,8 @@ from felinefolia.extensions import (
     jwt
 )
 
+from lib.util_decorators import add_user_claims_loader
+
 CELERY_TASK_LIST = [
     'felinefolia.resources.user.tasks',
 ]
@@ -52,23 +54,27 @@ def create_app(testing=False, settings_override=None):
     """
     app = Flask(__name__, instance_relative_config=True)
 
-    if testing is True:
-        app.config['TESTING'] = True
-
     # TODO: check if production or development server
     CORS(app, resources={r"/*": {"origins": "*"}})
 
     app.config.from_object('config.settings')
     app.config.from_pyfile('settings.py', silent=True)
 
+    # Load production environment settings
     if os.environ.get('PRODUCTION'):
-        print('loading production configuration')
         app.config.from_pyfile('prod_settings.py')
+
+    # Load end to end testing settings
+    if testing is True:
+        app.config.from_object('config.test_settings')
+        app.config.from_pyfile('test_settings.py', silent=True)
 
     stripe.api_key = app.config.get('STRIPE_SECRET_KEY')
     stripe.api_version = app.config.get('STRIPE_API_VERSION')
 
     extensions(app)
+
+    add_user_claims_loader(jwt)
 
     app.register_blueprint(views.blueprint)
 

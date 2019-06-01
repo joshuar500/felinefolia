@@ -1,6 +1,6 @@
-from .api import (Dashboard, Users)
+from .api import (Dashboard, AdminUserList)
 
 __all__ = [
     'Dashboard',
-    'Users'
+    'AdminUserList'
 ]

@@ -21,8 +21,8 @@ def make_auth_response(current_user):
     set_revoked_token(refresh_jti, 'false')
 
     # prevent circular imports
-    from flask import make_response
-    resp = make_response()
+    from flask import jsonify
+    resp = jsonify({'login': True})
 
     set_access_cookies(resp, access_token)
     set_refresh_cookies(resp, refresh_token)
