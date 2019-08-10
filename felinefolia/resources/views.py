@@ -4,7 +4,7 @@ from flask_restful import Api
 from felinefolia.resources.auth import (Register, Login, Logout)
 from felinefolia.resources.user import (UserResource)
 from felinefolia.resources.contact import (Contact)
-from felinefolia.resources.billing import (Subscribe)
+from felinefolia.resources.billing import (Subscribe, Unsubscribe)
 from felinefolia.resources.admin import (Dashboard, AdminUserList)
 
 blueprint = Blueprint('api', __name__, url_prefix='/api/v1')
@@ -24,6 +24,7 @@ api.add_resource(Contact, '/contact')
 
 # Billing Resources
 api.add_resource(Subscribe, '/subscribe')
+api.add_resource(Unsubscribe, '/unsubscribe')
 
 # Admin Resources
 api.add_resource(Dashboard, '/dashboard')

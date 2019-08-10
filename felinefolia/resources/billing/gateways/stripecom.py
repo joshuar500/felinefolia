@@ -20,7 +20,7 @@ class Event(object):
 
 class Customer(object):
     @classmethod
-    def create(cls, token=None, email=None, coupon=None, plan=None):
+    def create(cls, token=None, email=None, coupon=None, plan=None, address=None, shipping=None):
         """
         Create a new customer.
 
@@ -35,11 +35,17 @@ class Customer(object):
         :type coupon: str
         :param plan: Plan identifier
         :type plan: str
+        :param address: Billing Address
+        :type address: dict
+        :param shipping: Shipping Address
+        :type shipping: dict
         :return: Stripe customer
         """
         params = {
             'source': token,
-            'email': email
+            'email': email,
+            'address': address,
+            'shipping': shipping
         }
 
         if plan:
@@ -65,15 +71,13 @@ class Charge(object):
         :type amount: int
         :return: Stripe charge
         """
-        foo = stripe.Charge.create(
+        charge = stripe.Charge.create(
             amount=amount,
             currency=currency,
             customer=customer_id,
             statement_descriptor='FELINEFOLIA PLANTS')
 
-        print(foo)
-
-        return foo
+        return charge
 
 
 class Coupon(object):
@@ -166,6 +170,31 @@ class Invoice(object):
 
 
 class Subscription(object):
+    @classmethod
+    def create(cls, customer_id=None, coupon=None, plan=None):
+        """
+        Update an existing subscription.
+
+        API Documentation:
+          https://stripe.com/docs/api/python#create_subscription
+
+        :param customer_id: Customer id
+        :type customer_id: str
+        :param items: Items to subscribe to
+        :type items: set
+        """
+        customer = stripe.Customer.retrieve(customer_id)
+
+        subscription = {
+            'customer': customer.id,
+            'items': [{'plan': plan}]
+        }
+
+        if coupon:
+            subscription['coupon'] = coupon
+
+        return stripe.Subscription.create(**subscription)
+
     @classmethod
     def update(cls, customer_id=None, coupon=None, plan=None):
         """

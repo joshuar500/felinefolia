@@ -63,7 +63,7 @@ class Subscription(ResourceMixin, db.Model):
 
         return None
 
-    def create(self, user=None, name=None, plan=None, coupon=None, token=None):
+    def create(self, user=None, name=None, plan=None, coupon=None, token=None, address=None, shipping=None):
         """
         Create a recurring subscription.
 
@@ -88,8 +88,14 @@ class Subscription(ResourceMixin, db.Model):
         customer = PaymentCustomer.create(token=token,
                                           email=user.email,
                                           plan=plan,
+                                          address=address,
+                                          shipping=shipping,
                                           coupon=self.coupon)
 
+        # subscription = PaymentSubscription.create(customer_id=customer.id,
+        #                                           plan=plan)
+
+        # print(subscription)
         # Update the user account.
         user.payment_id = customer.id
         user.name = name

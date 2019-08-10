@@ -1,4 +1,4 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, fields
 from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity
@@ -6,10 +6,20 @@ from flask_jwt_extended import (
 
 from felinefolia.resources.billing.models.subscription import Subscription
 
+address_fields = {}
+address_fields['line 1'] = fields.String(attribute='addr1')
+address_fields['line 2'] = fields.String(attribute='addr2')
+address_fields['city'] = fields.String(attribute='city')
+address_fields['state'] = fields.String(attribute='state')
+address_fields['zip'] = fields.String(attribute='zip')
+
+
 register_parser = reqparse.RequestParser()
-register_parser.add_argument(
-    'id'
-)
+register_parser.add_argument('productPlan')
+register_parser.add_argument('name')
+register_parser.add_argument('tokenId')
+register_parser.add_argument('address', type=dict)
+register_parser.add_argument('shipping', type=dict)
 
 
 class Subscribe(Resource):
@@ -22,27 +32,51 @@ class Subscribe(Resource):
     def post(self):
         current_user = get_jwt_identity()
         args = register_parser.parse_args()
-        print(args.id)
+        # prevent circular imports
         from felinefolia.resources.user.models import User
         user = User.find_by_identity(current_user['username'])
         if user and user.subscription:
-            print('User has a subscription!')
-        print('User does not have a subscription!')
-        # TODO:
-        # 1. get the plan from args
-        subscription_plan = Subscription.get_plan_by_id(0)
-        print(subscription_plan)  # remove this print
-        # 2. guard against invalid plan
-        # 3. get user, create plan
+            return {'message': 'User already subscribed to a plan.'}, 400
+        # Do we need this 👇
+        # subscription_plan = Subscription.get_plan_by_id(args.productPlan)
+        # TODO: Guard against invalid plan?
         subscription = Subscription()
         created = subscription.create(user=user,
-                                      name='joshua rincon',
-                                      plan=0,
+                                      name=args.name,
+                                      plan=args.productPlan,
                                       coupon=None,
-                                      token=args.id)
+                                      token=args.tokenId,
+                                      address=args.address,
+                                      shipping=args.shipping)
+
         if created:
-            print('something great happened!')
+            return {'message': 'Subscribed'}
         else:
-            print('something bad happened!')
+            return {'message': 'Something went wrong. Please contact hello@felinefolia.com'}
+
+        return current_user, 200
+
+
+class Unsubscribe(Resource):
+    """
+    Deletes a monthly subscription for a user
+
+    """
+
+    @jwt_required
+    def post(self):
+        current_user = get_jwt_identity()
+        # args = register_parser.parse_args()
+        # prevent circular imports
+        from felinefolia.resources.user.models import User
+        user = User.find_by_identity(current_user['username'])
+        if user and user.subscription:
+            subscription = Subscription()
+            cancelled = subscription.cancel(user=user)
+
+        if cancelled:
+            return {'message': 'Subscription Cancelled'}
+        else:
+            return {'message': 'Something went wrong. Please contact hello@felinefolia.com'}
 
         return current_user, 200

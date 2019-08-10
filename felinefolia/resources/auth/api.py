@@ -21,7 +21,6 @@ class Register(Resource):
             user = User(username=args.email, email=args.email)
             user.password = user.encrypt_password(args.password)
             user.save()
-            print('im right here')
             current_user = {
                 'username': user.username,
                 'role': user.role,
@@ -30,9 +29,7 @@ class Register(Resource):
 
             from felinefolia.resources.user.tasks import add_subscriber
             add_subscriber(user.email)
-            print('lol im right here')
             resp = make_auth_response(current_user)
-            print('jkjk im right here')
             return resp
         return {'message': 'User already exists.'}, 500
 
@@ -43,17 +40,12 @@ class Login(Resource):
         args = login_parser().parse_args()
         user = User.find_by_identity(args.username)
         if user and user.authenticated(password=args.password):
-
             current_user = {
                 'username': user.username,
                 'role': user.role,
                 'email': user.email
             }
-            print(current_user)
-
             resp = make_auth_response(current_user)
-            print('~~~~~~~~~~~~~~~~~~~~~|||||||||')
-            print(resp.json)
             return resp
         return {"Error": "Something went wrong."}, 401
 

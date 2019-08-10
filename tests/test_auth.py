@@ -29,12 +29,14 @@ def test_make_auth_response(app, client, db, monkeypatch):
 
 def test_register_user(app, client, db, monkeypatch):
 
+    # mock a celery task
     def mock_add_subscriber(user):
         return None
 
     from felinefolia.resources.user import tasks
     monkeypatch.setattr(tasks, 'add_subscriber', mock_add_subscriber)
 
+    # mock a celery task
     def mock_make_request(user):
         return user
 
@@ -44,8 +46,7 @@ def test_register_user(app, client, db, monkeypatch):
     # register a user
     data = {
         'email': 'testuser@email.com',
-        'password': 'testpassword',
-        'role': 'member'
+        'password': 'testpassword'
     }
     rep = client.post('/api/v1/register', json=data)
     assert rep.status_code == 200
@@ -58,3 +59,20 @@ def test_register_user(app, client, db, monkeypatch):
     # rep = client.post('/api/v1/register')
     # assert rep.status_code == 400
     # assert rep.error.message == 'Invalid email address'
+
+
+def test_login_user(app, client, db, member_user, monkeypatch):
+
+    # mock a celery task
+    def mock_make_request(user):
+        return user
+
+    from felinefolia.resources.auth import api
+    monkeypatch.setattr(api, 'make_auth_response', mock_make_request)
+
+    data = {
+        'username': member_user.email,
+        'password': 'testdevpassword'
+    }
+    rep = client.post('/api/v1/login', json=data)
+    assert rep.status_code == 200

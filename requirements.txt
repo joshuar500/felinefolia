@@ -16,12 +16,12 @@ tox==3.11.1
 Click==6.7
 
 # Data and workers.
-psycopg2==2.7.5
+psycopg2==2.8.2
 Flask-SQLAlchemy==2.4
 alembic==1.0.0
 redis==3.2.1
 celery==4.2.1
-sqlalchemy-utils==0.33.2
+sqlalchemy-utils==0.33.9
 
 # Authentication
 Flask-JWT-Extended==3.12.1

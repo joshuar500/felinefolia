@@ -14,6 +14,5 @@ class UserResource(Resource):
         # current_user = get_jwt_identity()
         user = User.query.get_or_404(user_id)
         if user:
-            print(user.as_dict())
             return user.as_dict(), 200
         return {"user": "not found"}, 404

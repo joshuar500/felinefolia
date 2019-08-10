@@ -45,8 +45,10 @@ Get comments with user email
 
 ### Testing
 
-We use tox to run tests. All you need is the following command:
+We use tox to run tests. Make sure you have your dev environment up and running and then all you need to run is the following command:
 
 ```
 tox
 ```
+
+If you get an Invocation error, try deleting your `.tox` folder and try again.

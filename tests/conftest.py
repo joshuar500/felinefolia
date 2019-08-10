@@ -13,6 +13,8 @@ from flask_jwt_extended import (
 
 from lib.util_decorators import add_user_claims_loader
 
+from .helpers.email_generator import generate_random_email
+
 
 @pytest.fixture
 def app():
@@ -38,15 +40,28 @@ def db(app):
     _db.drop_all()
 
 
-# @pytest.fixture
-# def admin_user(db):
-#     user = User(username='testadmin@local.host', email='testadmin@local.host',
-#                 password="testdevpassword", role="admin")
+@pytest.fixture
+def admin_user(db):
+    random_email = generate_random_email(5)
+    user = User(username=random_email, email=random_email,
+                password="testdevpassword", role="admin")
 
-#     db.session.add(user)
-#     db.session.commit()
+    db.session.add(user)
+    db.session.commit()
 
-#     return user
+    return user
+
+
+@pytest.fixture
+def member_user(db):
+    random_email = generate_random_email(10)
+    user = User(username=random_email, email=random_email,
+                password="testdevpassword", role="member")
+
+    db.session.add(user)
+    db.session.commit()
+
+    return user
 
 
 @pytest.fixture
@@ -60,7 +75,12 @@ def admin_json_access_token(app, client):
     }
 
 
-# @pytest.fixture(autouse=True)
-# def no_requests(monkeypatch):
-    # monkeypatch.delattr("felinefolia.resources.user.tasks.add_subscriber")
-    # monkeypatch.delattr("felinefolia.resources.auth.api.make_auth_response")
+@pytest.fixture
+def member_json_access_token(app, client, member_user):
+
+    access_token = create_access_token({'username': member_user.username,
+                                        'role': member_user.role})
+
+    return {
+        'access_token': access_token
+    }

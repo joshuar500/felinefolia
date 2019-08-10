@@ -79,15 +79,11 @@ STRIPE_PLANS = {
     '0': {
         'id': 'regular',
         'name': 'regular',
-        'amount': 100,
+        'amount': 30,
         'currency': STRIPE_CURRENCY,
         'interval': 'month',
         'interval_count': 1,
-        'trial_period_days': 14,
-        'statement_descriptor': 'FELINEFOLIA REGULAR',
-        'metadata': {
-            'coins': 110
-        }
+        'statement_descriptor': 'FELINEFOLIA REGULAR'
     }
 }
 
