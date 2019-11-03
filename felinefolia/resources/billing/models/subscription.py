@@ -7,6 +7,7 @@ from lib.util_sqlalchemy import ResourceMixin
 from felinefolia.extensions import db
 from felinefolia.resources.billing.models.credit_card import CreditCard
 from felinefolia.resources.billing.models.coupon import Coupon
+from felinefolia.resources.billing.models.invoice import Invoice
 from felinefolia.resources.billing.gateways.stripecom import Card as PaymentCard
 from felinefolia.resources.billing.gateways.stripecom import \
     Customer as PaymentCustomer, Subscription as PaymentSubscription
@@ -92,20 +93,11 @@ class Subscription(ResourceMixin, db.Model):
                                           shipping=shipping,
                                           coupon=self.coupon)
 
-        # subscription = PaymentSubscription.create(customer_id=customer.id,
-        #                                           plan=plan)
-
-        # print(subscription)
         # Update the user account.
         user.payment_id = customer.id
         user.name = name
         user.previous_plan = plan
         user.subscribed = True
-        # user.coins = add_subscription_coins(user.coins,
-        #                                     Subscription.get_plan_by_id(
-        #                                         user.previous_plan),
-        #                                     Subscription.get_plan_by_id(plan),
-        #                                     user.cancelled_subscription_on)
         user.cancelled_subscription_on = None
 
         # Set the subscription details.
@@ -120,6 +112,11 @@ class Subscription(ResourceMixin, db.Model):
         # Create the credit card.
         credit_card = CreditCard(user_id=user.id,
                                  **CreditCard.extract_card_params(customer))
+
+        # Create the invoice
+        user_subscription = customer.subscriptions.data[0]
+        invoice = Invoice()
+        invoice.create(user=user, coupon=coupon, customer=customer, user_subscription=user_subscription)
 
         db.session.add(user)
         db.session.add(credit_card)

@@ -50,9 +50,9 @@ class Subscribe(Resource):
                                       shipping=args.shipping)
 
         if created:
-            return {'message': 'Subscribed'}
+            return {'message': 'Subscribed'}, 200
         else:
-            return {'message': 'Something went wrong. Please contact hello@felinefolia.com'}
+            return {'message': 'Something went wrong. Please contact hello@felinefolia.com'}, 400
 
         return current_user, 200
 

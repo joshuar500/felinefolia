@@ -22,7 +22,7 @@ def make_auth_response(current_user):
 
     # prevent circular imports
     from flask import jsonify
-    resp = jsonify({'login': True})
+    resp = jsonify({'login': True, 'subscribed': current_user['subscribed']})
 
     set_access_cookies(resp, access_token)
     set_refresh_cookies(resp, refresh_token)

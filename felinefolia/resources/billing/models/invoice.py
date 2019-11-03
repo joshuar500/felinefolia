@@ -1,19 +1,23 @@
 import datetime
+from collections import OrderedDict
 
 from sqlalchemy import or_
 
 from lib.util_sqlalchemy import ResourceMixin
 from felinefolia.extensions import db
 from felinefolia.resources.billing.models.credit_card import CreditCard
-from felinefolia.resources.billing.models.coupon import Coupon
 from felinefolia.resources.billing.gateways.stripecom import (
-    Customer as PaymentCustomer,
-    Charge as PaymentCharge,
     Invoice as PaymentInvoice
 )
 
 
 class Invoice(ResourceMixin, db.Model):
+    SHIPPING_STATUS = OrderedDict([
+        ('ready', 'Ready'),
+        ('transit', 'Transit'),
+        ('delivered', 'Delivered')
+    ])
+
     __tablename__ = 'invoices'
     id = db.Column(db.Integer, primary_key=True)
 
@@ -33,6 +37,9 @@ class Invoice(ResourceMixin, db.Model):
     tax = db.Column(db.Integer())
     tax_percent = db.Column(db.Float())
     total = db.Column(db.Integer())
+    tracking_number = db.Column(db.String(128))
+    shipping_status = db.Column(db.Enum(*SHIPPING_STATUS, name='shipping_status_types', native_enum=False),
+                                index=True, nullable=False, server_default='ready')
 
     # De-normalize the card details so we can render a user's history properly
     # even if they have no active subscription or changed cards at some point.
@@ -156,8 +163,7 @@ class Invoice(ResourceMixin, db.Model):
 
         return Invoice.parse_from_api(invoice)
 
-    def create(self, user=None, currency=None, amount=None, coins=None,
-               coupon=None, token=None):
+    def create(self, user=None, coupon=None, user_subscription=None, customer=None):
         """
         Create an invoice item.
 
@@ -167,52 +173,30 @@ class Invoice(ResourceMixin, db.Model):
         :type amount: str
         :param amount: Amount in cents
         :type amount: int
-        :param coins: Amount of coins
-        :type coins: int
         :param coupon: Coupon code to apply
         :type coupon: str
-        :param token: Token returned by JavaScript
-        :type token: str
-        :return: bool
         """
-        if token is None:
+        if user_subscription is None:
             return False
 
-        customer = PaymentCustomer.create(token=token, email=user.email)
-
-        if coupon:
-            self.coupon = coupon.upper()
-            coupon = Coupon.query.filter(Coupon.code == self.coupon).first()
-            amount = coupon.apply_discount_to(amount)
-
-        charge = PaymentCharge.create(customer.id, currency, amount)
-
-        # Redeem the coupon.
-        if coupon:
-            coupon.redeem()
-
-        # Add the coins to the user.
-        user.coins += coins
-
         # Create the invoice item.
-        period_on = datetime.datetime.utcfromtimestamp(charge.get('created'))
+        period_on = datetime.datetime.utcfromtimestamp(user_subscription.get('created'))
         card_params = CreditCard.extract_card_params(customer)
 
         self.user_id = user.id
-        self.plan = '&mdash;'
-        self.receipt_number = charge.get('receipt_number')
-        self.description = charge.get('statement_descriptor')
+        self.plan = user_subscription.plan.nickname
+        self.receipt_number = user_subscription.latest_invoice
+        # self.description = user_subscription.plan.statement_descriptor
         self.period_start_on = period_on
         self.period_end_on = period_on
-        self.currency = charge.get('currency')
+        self.currency = customer.currency
         self.tax = None
         self.tax_percent = None
-        self.total = charge.get('amount')
+        self.total = user_subscription['items'].data[0].plan.amount
         self.brand = card_params.get('brand')
         self.last4 = card_params.get('last4')
         self.exp_date = card_params.get('exp_date')
 
-        db.session.add(user)
         db.session.add(self)
         db.session.commit()
 
