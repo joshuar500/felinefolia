@@ -1,10 +1,6 @@
 pipeline {
     agent { dockerfile true }
     stages {
-        stage('Test') {
-            steps {
-                sh 'tox'
-            }
-        }
+        step([$class: 'DockerComposeBuilder', dockerComposeFile: 'docker-compose.dev.yml', option: [$class: 'StartAllServices'], useCustomDockerComposeFile: true])
     }
 }
