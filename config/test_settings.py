@@ -7,17 +7,17 @@ from datetime import timedelta
 
 from celery.schedules import crontab
 
-TESTING = False
+
 DEBUG = True
 LOG_LEVEL = 'DEBUG'  # CRITICAL / ERROR / WARNING / INFO / DEBUG
 
 SERVER_NAME = 'felinefolia.local:8000'
 SECRET_KEY = 'insecurekeyfordev'
 
-JWT_TOKEN_LOCATION = 'cookies'
-JWT_ACCESS_COOKIE_PATH = '/'
-JWT_REFRESH_COOKIE_PATH = '/token/refresh'
+JWT_HEADER_TYPE = 'Bearer'
 JWT_COOKIE_CSRF_PROTECT = False
+JWT_BLACKLIST_ENABLED = False
+JWT_TOKEN_LOCATION = 'json'
 JWT_SECRET_KEY = SECRET_KEY
 
 # Flask-Mail.
@@ -42,7 +42,7 @@ LANGUAGES = {
 BABEL_DEFAULT_LOCALE = 'en'
 
 # Celery.
-CELERY_BROKER_URL = 'redis://:devpassword@redis:6379/0'
+CELERY_BROKER_URL = 'redis://:devpassword@felinefolia.local:6379/0'
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
@@ -60,7 +60,7 @@ CELERY_REDIS_MAX_CONNECTIONS = 5
 # }
 
 # SQLAlchemy.
-db_uri = 'postgresql://felinefolia:devpassword@postgres:5432/felinefolia'
+db_uri = 'postgresql://felinefolia:devpassword@felinefolia.local:5432/felinefolia'
 SQLALCHEMY_DATABASE_URI = db_uri
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -79,11 +79,15 @@ STRIPE_PLANS = {
     '0': {
         'id': 'regular',
         'name': 'regular',
-        'amount': 30,
+        'amount': 100,
         'currency': STRIPE_CURRENCY,
         'interval': 'month',
         'interval_count': 1,
-        'statement_descriptor': 'FELINEFOLIA REGULAR'
+        'trial_period_days': 14,
+        'statement_descriptor': 'FELINEFOLIA REGULAR',
+        'metadata': {
+            'coins': 110
+        }
     }
 }
 

@@ -1,18 +1,61 @@
-version: 2
-jobs:
-  deployment:
+version: 2.1
+
+executors:
+  ff-executor:
     docker:
-      - image: circleci/python:3.6.1
+      - image: circleci/python:3.6.2-stretch-browsers
     working_directory: ~/felinefolia
+
+jobs:
+  test:
+    executor: ff-executor
     steps:
-      # - add_ssh_keys:
-      #     fingerprints:
-      #       - "fd:cc:de:48:c6:21:94:bb:6d:bc:71:ef:9a:52:e5:bb"
       - attach_workspace:
           at: ~/felinefolia
+      - checkout
+      - setup_remote_docker
+      - run: cd felinefolia/
+      - run: ls -la
+      - run: docker-compose -f docker-compose.dev.yml build && docker-compose -f docker-compose.dev.yml up -d
+      - run: echo "Running tests! Tests passed!"
+      - run: docker-compose -f docker-compose.dev.yml down
+      - run: echo "We out here!"
+  # make_droplet:
+  #   executor: ff-executor
+  #   steps:
+  #     - attach_workspace:
+  #         at: ~/felinefolia
+  #     - checkout
+  #     - run: sudo chown -R circleci:circleci /usr/local/bin
+  #     - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+  #     - run:
+  #         name: Install Python deps in a venv and create droplet
+  #         command: |
+  #           pip install -r deploy/requirements.txt
+  #           python deploy/deploy.py create_droplet
+  #     - persist_to_workspace:
+  #         root: deploy
+  #         paths:
+  #           - tmp/*
+  deployment:
+    executor: ff-executor
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "4a:11:e3:b9:7e:b1:3c:76:f2:80:22:28:67:15:82:45"
+      - attach_workspace:
+          at: ~/felinefolia
+      - checkout
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+      - run: ls -la ~/.ssh/
       - run:
-           name: Add FelineFolia to known hosts
-           command: ssh-keyscan -H ${SSH_SERVER} >> ~/.ssh/known_hosts
+          name: Install Python deps in a venv
+          command: |
+            pip install -r deploy/requirements.txt
+      # - run:
+      #      name: Add FelineFolia to known hosts
+      #      command: ssh-keyscan -H ${SSH_SERVER} >> ~/.ssh/known_hosts
       - deploy:
           name: Deploy & Alias.
           command: |
@@ -20,22 +63,32 @@ jobs:
               now build -t ${NOW_TOKEN} -n=felinefolia-react --static
               now -t ${NOW_TOKEN} alias felinefolia-react-production.now.sh
             elif [ "${CIRCLE_BRANCH}" == "development" ]; then
-              now build -t ${NOW_TOKEN} -n=felinefolia-react --static
-              now -t ${NOW_TOKEN} alias felinefolia-react-alpha.now.sh
+              python deploy/deploy.py deploy_to_staging
             elif [ "${CIRCLE_BRANCH}" == "master" ]; then
               echo "Building Master Branch!"
               ssh ${SSH_USER}@${SSH_SERVER} 'docker-compose up --build'
             else
-              echo "This failed miserably!"
+              python deploy/deploy.py deploy_to_staging
+              echo "This failed miserably!!"
             fi
 workflows:
   version: 2
   test_build_deploy:
     jobs:
+      # - test:
+      #     context: felinefolia
+      # - make_droplet:
+      #     requires:
+      #       - test
+      #     context: felinefolia
       - deployment:
-          filters:
-            branches:
-              only:
-                - development
-                - master
-                - production
+          # requires:
+          #   - test
+            # - make_droplet
+          context: felinefolia
+          # filters:
+          #   branches:
+          #     only:
+          #       - development
+          #       - master
+          #       - production

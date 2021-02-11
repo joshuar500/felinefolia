@@ -1,9 +1,0 @@
-FelineFolia_CLI.egg-info/PKG-INFO
-FelineFolia_CLI.egg-info/SOURCES.txt
-FelineFolia_CLI.egg-info/dependency_links.txt
-FelineFolia_CLI.egg-info/entry_points.txt
-FelineFolia_CLI.egg-info/requires.txt
-FelineFolia_CLI.egg-info/top_level.txt
-cli/__init__.py
-cli/cli.py
-cli/commands/__init__.py

@@ -1,4 +1,0 @@
-
-        [console_scripts]
-        felinefolia=cli.cli:cli
-    
