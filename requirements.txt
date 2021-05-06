@@ -34,7 +34,7 @@ flask-marshmallow==0.10.1
 marshmallow-sqlalchemy==0.16.3
 
 # Cors
-Flask-Cors==3.0.6
+Flask-Cors==3.0.9
 
 # Payments.
 stripe==2.5.0
